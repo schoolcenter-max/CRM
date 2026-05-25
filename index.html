@@ -248,7 +248,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="fg"><label>Contraseña</label><input type="password" id="li-p" placeholder="••••••••" autocomplete="current-password"></div>
     <button class="btn btn-primary btn-full" id="lbtn">Entrar</button>
     <div style="text-align:center;margin-top:14px">
-      <span style="font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline" onclick="limpiarSesion()">¿Problemas para entrar? Haz clic aquí</span>
+      <span style="font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline" id="btn-limpiar" style="cursor:pointer">¿Problemas para entrar? Haz clic aquí</span>
     </div>
   </div>
 </div>
@@ -292,7 +292,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="sidebar-user">
       <div class="u-name" id="u-name">—</div>
       <div class="u-role" id="u-role">—</div>
-      <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+      <button class="logout-btn" id="btn-logout">Cerrar sesión</button>
     </div>
   </aside>
 
@@ -346,4 +346,1022 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
 
     <!-- EGRESADOS -->
-    <div id="page-egresados" class="page
+    <div id="page-egresados" class="page">
+      <div class="topbar">
+        <div class="topbar-title">Egresados</div>
+        <div class="topbar-actions">
+          <div class="search-w" style="width:190px"><span class="si">⌕</span><input type="text" id="s-egr" placeholder="Buscar..." oninput="filterEgresados()"></div>
+        </div>
+      </div>
+      <div class="content" id="pg-egresados"><div class="pload"><div class="loading"></div></div></div>
+    </div>
+
+    <!-- REPORTES -->
+    <div id="page-reportes" class="page">
+      <div class="topbar"><div class="topbar-title">Reportes</div></div>
+      <div class="content" id="pg-reportes"><div class="pload"><div class="loading"></div></div></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: Nuevo Lead -->
+<div class="moverlay" id="m-lead">
+  <div class="modal">
+    <div class="mh"><span class="mt-m">Nuevo Lead</span><button class="mx" onclick="closeM('m-lead')">×</button></div>
+    <div class="mb">
+      <div class="fgrid">
+        <div class="fg"><label>Nombre completo *</label><input id="l-nom" type="text" placeholder="Nombre del prospecto"></div>
+        <div class="fg"><label>Teléfono / WhatsApp *</label><input id="l-tel" type="text" placeholder="310-XXX-XXXX"></div>
+        <div class="fg"><label>Canal de contacto</label>
+          <select id="l-can">
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Presencial">Presencial</option>
+            <option value="Llamada">Llamada telefónica</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Web">Página web</option>
+            <option value="Referido">Referido</option>
+          </select>
+        </div>
+        <div class="fg"><label>Servicio de interés</label>
+          <select id="l-srv">
+            <option value="Primera vez">Curso por primera vez</option>
+            <option value="Refuerzo">Clases de refuerzo</option>
+            <option value="Renovación">Renovación de licencia</option>
+            <option value="Recategorización">Recategorización</option>
+            <option value="Otro">Otro servicio</option>
+          </select>
+        </div>
+        <div class="fg ffull"><label>Nota inicial</label><textarea id="l-nota" placeholder="¿Qué preguntó? ¿Horario preferido? ¿Experiencia previa?"></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost btn-sm" onclick="closeM('m-lead')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveLead()">Guardar lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Registrar Cliente -->
+<div class="moverlay" id="m-cliente">
+  <div class="modal modal-lg">
+    <div class="mh"><span class="mt-m">Registrar Cliente — Ya pagó</span><button class="mx" onclick="closeM('m-cliente')">×</button></div>
+    <div class="mb">
+      <div class="fgrid">
+        <div class="fg"><label>Nombre completo *</label><input id="c-nom" type="text" placeholder="Nombre completo"></div>
+        <div class="fg"><label>Documento (CC)</label><input id="c-doc" type="text" placeholder="No. cédula"></div>
+        <div class="fg"><label>Teléfono / WhatsApp *</label><input id="c-tel" type="text" placeholder="310-XXX-XXXX"></div>
+        <div class="fg"><label>Email</label><input id="c-mail" type="email" placeholder="correo@ejemplo.com"></div>
+        <div class="fg"><label>Servicio</label>
+          <select id="c-srv">
+            <option value="Primera vez">Curso por primera vez</option>
+            <option value="Refuerzo">Clases de refuerzo</option>
+            <option value="Renovación">Renovación de licencia</option>
+            <option value="Recategorización">Recategorización</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="fg"><label>Canal de origen</label>
+          <select id="c-can">
+            <option>WhatsApp</option><option>Presencial</option><option>Llamada</option>
+            <option>Instagram</option><option>Facebook</option><option>Web</option><option>Referido</option>
+          </select>
+        </div>
+        <div class="fg"><label>¿Tiene inscripción RUNT?</label>
+          <select id="c-runt">
+            <option value="Si">Sí, ya tiene</option>
+            <option value="No">No, hay que inscribirlo</option>
+            <option value="Pendiente">Por confirmar</option>
+          </select>
+        </div>
+        <div class="fg"><label>Jornada preferida</label>
+          <select id="c-jor">
+            <option value="Semana Mañana">Intensivo Mañana — Lun–Vie 8am–12m</option>
+            <option value="Semana Tarde">Tarde — Lun–Vie 2pm–6pm</option>
+            <option value="Sábados">Sábados — 8am–12m</option>
+            <option value="Por definir">Por definir</option>
+          </select>
+        </div>
+        <div class="fg ffull"><label>Observaciones</label><textarea id="c-obs" placeholder="Notas adicionales sobre el cliente..."></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost btn-sm" onclick="closeM('m-cliente')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveCliente()">Registrar cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Agendar Cita -->
+<div class="moverlay" id="m-cita">
+  <div class="modal">
+    <div class="mh"><span class="mt-m">Agendar Cita</span><button class="mx" onclick="closeM('m-cita')">×</button></div>
+    <div class="mb">
+      <div class="fgrid">
+        <div class="fg ffull"><label>Cliente *</label><select id="ci-cli"></select></div>
+        <div class="fg"><label>Fecha *</label><input id="ci-fec" type="date"></div>
+        <div class="fg"><label>Jornada</label>
+          <select id="ci-jor">
+            <option value="manana">Mañana — 7:30am a 10:00am (Lun–Vie y Sáb)</option>
+            <option value="tarde">Tarde — 1:00pm a 2:30pm (solo Lun–Vie)</option>
+          </select>
+        </div>
+        <div class="fg ffull"><label>Propósito</label>
+          <select id="ci-prop">
+            <option>Exámenes médicos + Matrícula + RUNT</option>
+            <option>Solo exámenes médicos</option>
+            <option>Solo matrícula</option>
+            <option>Solo inscripción RUNT</option>
+            <option>Seguimiento presencial</option>
+          </select>
+        </div>
+        <div class="fg ffull"><label>Nota</label><input id="ci-nota" type="text" placeholder="Ej: Traer cédula original y 2 fotos"></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost btn-sm" onclick="closeM('m-cita')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveCita()">Agendar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Ver Lead -->
+<div class="moverlay" id="m-ver-lead">
+  <div class="modal">
+    <div class="mh"><span class="mt-m" id="vl-title">Lead</span><button class="mx" onclick="closeM('m-ver-lead')">×</button></div>
+    <div class="mb" id="vl-body"></div>
+    <div class="mf" id="vl-footer"></div>
+  </div>
+</div>
+
+<!-- MODAL: Ver Cliente -->
+<div class="moverlay" id="m-ver-cliente">
+  <div class="modal modal-lg">
+    <div class="mh"><span class="mt-m" id="vc-title">Cliente</span><button class="mx" onclick="closeM('m-ver-cliente')">×</button></div>
+    <div class="mb" id="vc-body"></div>
+    <div class="mf" id="vc-footer"></div>
+  </div>
+</div>
+
+<!-- MODAL: Ver Egresado -->
+<div class="moverlay" id="m-ver-egr">
+  <div class="modal">
+    <div class="mh"><span class="mt-m" id="ve-title">Egresado</span><button class="mx" onclick="closeM('m-ver-egr')">×</button></div>
+    <div class="mb" id="ve-body"></div>
+    <div class="mf" id="ve-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeM('m-ver-egr')">Cerrar</button>
+      <button class="btn btn-success btn-sm" id="ve-referido">Registrar referido</button>
+      <button class="btn btn-primary btn-sm" id="ve-renovacion">Renovación de licencia</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="text/javascript">
+// -----------------------------------------------
+// CONFIGURACIÓN
+// -----------------------------------------------
+const API_URL = 'https://script.google.com/macros/s/AKfycbyeK1-qwcDWOaEgFMM74IxAMG14n5ugghthmi4m3cJOOgZFB_sNiYlUL39nKdWUgeA/exec';
+const DEMO    = false;
+
+// -----------------------------------------------
+// USUARIOS DEL SISTEMA
+// -----------------------------------------------
+const USUARIOS = [
+  { id:'U001', nombre:'Administrador',     email:'admin@schoolcenter.com.co',      password:'Admin2026*',   rol:'admin'      },
+  { id:'U002', nombre:'Recepción',         email:'recepcion@schoolcenter.com.co',  password:'Recep2026*',   rol:'recepcion'  },
+  { id:'U003', nombre:'Área Comercial',    email:'comercial@schoolcenter.com.co',  password:'Venta2026*',   rol:'comercial'  },
+];
+
+// Permisos por rol
+const PERMISOS = {
+  admin:     ['dashboard','leads','clientes','citas','egresados','reportes'],
+  recepcion: ['dashboard','leads','clientes','citas','egresados'],
+  comercial: ['dashboard','leads'],
+};
+
+// -----------------------------------------------
+// ESTADO
+// -----------------------------------------------
+let SESSION = null;
+let DB = { leads:[], clientes:[], citas:[], egresados:[] };
+let UI = { leadId:null, clienteId:null, egrId:null };
+
+// -----------------------------------------------
+// API / MOCK
+// -----------------------------------------------
+async function api(action, data={}) {
+  if (DEMO) return mockApi(action, data);
+  try {
+    const body = { action, data };
+    if (SESSION?.token) body.token = SESSION.token;
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      redirect: 'follow',
+    });
+    const text = await r.text();
+    try { return JSON.parse(text); }
+    catch(e) { return { ok:false, error:'Respuesta inválida: '+text.slice(0,120) }; }
+  } catch(e) { return { ok:false, error:'Error de red: '+e.message }; }
+}
+
+function mockApi(action, data) {
+  const ts = () => new Date().toLocaleString('es-CO',{hour12:false});
+  switch(action) {
+    case 'login': {
+      const u = USUARIOS.find(u => u.email===data.email && u.password===data.password);
+      if (!u) return { ok:false, error:'Correo o contraseña incorrectos' };
+      return { ok:true, token:'tok-'+u.id+'-'+Date.now(), usuario:{ id:u.id, nombre:u.nombre, rol:u.rol } };
+    }
+    case 'getData': return { ok:true, ...DB };
+    case 'saveLead':     { const id='L'+String(Date.now()).slice(-6); DB.leads.push({id,...data,estado:'Nuevo',seguimiento:[],creadoEn:ts(),creadoPor:SESSION.usuario.nombre}); return {ok:true,id}; }
+    case 'saveCliente':  { const id='C'+String(Date.now()).slice(-6); DB.clientes.push({id,...data,estado:'Cita pendiente',creadoEn:ts()}); return {ok:true,id}; }
+    case 'saveCita':     { const id='CI'+String(Date.now()).slice(-6); DB.citas.push({id,...data,estado:'Confirmada',creadoEn:ts()}); return {ok:true,id}; }
+    case 'addSeguimiento': {
+      const lead = DB.leads.find(l=>l.id===data.leadId);
+      if(lead){ if(!lead.seguimiento) lead.seguimiento=[]; lead.seguimiento.push({texto:data.texto,autor:SESSION.usuario.nombre,fecha:ts()}); }
+      return {ok:true};
+    }
+    case 'updateLead':   { const i=DB.leads.findIndex(l=>l.id===data.id); if(i>=0) Object.assign(DB.leads[i],data); return {ok:true}; }
+    case 'updateCliente':{ const i=DB.clientes.findIndex(c=>c.id===data.id); if(i>=0) Object.assign(DB.clientes[i],data); return {ok:true}; }
+    case 'updateCita':   { const i=DB.citas.findIndex(c=>c.id===data.id); if(i>=0) Object.assign(DB.citas[i],data); return {ok:true}; }
+    case 'graduarCliente': {
+      const i=DB.clientes.findIndex(c=>c.id===data.id);
+      if(i>=0){ const c=DB.clientes.splice(i,1)[0]; c.estado='Graduado'; c.graduadoEn=ts(); DB.egresados.push(c); }
+      return {ok:true};
+    }
+    case 'deleteLead':    { const i=DB.leads.findIndex(l=>l.id===data.id); if(i>=0) DB.leads.splice(i,1); return {ok:true}; }
+    case 'deleteCliente': { const i=DB.clientes.findIndex(c=>c.id===data.id); if(i>=0) DB.clientes.splice(i,1); return {ok:true}; }
+    case 'deleteEgresado':{ const i=DB.egresados.findIndex(e=>e.id===data.id); if(i>=0) DB.egresados.splice(i,1); return {ok:true}; }
+    case 'deleteCita':    { const i=DB.citas.findIndex(c=>c.id===data.id); if(i>=0) DB.citas.splice(i,1); return {ok:true}; }
+    case 'logout': return {ok:true};
+    default: return {ok:true};
+  }
+}
+
+// -----------------------------------------------
+// AUTH
+// -----------------------------------------------
+async function doLogin() {
+  const email = g('li-e').value.trim();
+  const pass  = g('li-p').value;
+  const err   = g('lerr');
+  const btn   = g('lbtn');
+  err.style.display='none';
+  if(!email||!pass){ err.textContent='Ingresa correo y contraseña'; err.style.display='block'; return; }
+  btn.disabled=true; btn.innerHTML='<span class="loading"></span>';
+  const res = await api('login',{email,password:pass});
+  btn.disabled=false; btn.textContent='Entrar';
+  if(!res.ok){
+    err.textContent=(res.error||'Error desconocido');
+    err.style.display='block';
+    console.error('Login error:', res);
+    return;
+  }
+  SESSION={token:res.token,usuario:res.usuario};
+  localStorage.setItem('sc3_session',JSON.stringify(SESSION));
+  initApp();
+}
+
+async function doLogout() {
+  await api('logout');
+  SESSION=null;
+  localStorage.removeItem('sc3_session');
+  g('app').style.display='none';
+  g('login-screen').style.display='flex';
+  g('li-e').value=''; g('li-p').value='';
+}
+
+// Limpiar sesión manualmente si hay problemas
+function limpiarSesion() {
+  localStorage.removeItem('sc3_session');
+  SESSION = null;
+  location.reload();
+}
+
+// -----------------------------------------------
+// INIT
+// -----------------------------------------------
+async function initApp() {
+  g('login-screen').style.display='none';
+  g('app').style.display='flex';
+  g('btn-logout').addEventListener('click', doLogout);
+  const u = SESSION.usuario;
+  const perms = PERMISOS[u.rol]||[];
+
+  g('u-name').textContent = u.nombre;
+  const re = g('u-role');
+  re.textContent = {admin:'Administrador',recepcion:'Recepción',comercial:'Área Comercial'}[u.rol]||u.rol;
+  re.className = 'u-role role-'+u.rol;
+  g('fecha-hoy').textContent = new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
+  g('nav-fecha').value = hoy();
+
+  // Mostrar/ocultar nav según rol
+  const navMap = {
+    'nav-leads':'leads','nav-clientes':'clientes','nav-citas':'citas',
+    'nav-egresados':'egresados','nav-reportes':'reportes'
+  };
+  Object.entries(navMap).forEach(([navId,perm])=>{
+    const el=g(navId); if(el) el.classList.toggle('hidden',!perms.includes(perm));
+  });
+
+  // Ocultar secciones de nav según rol
+  if(u.rol==='comercial'){
+    g('ns-operaciones').style.display='none';
+    g('ns-admin').style.display='none';
+  }
+  if(u.rol==='recepcion') g('ns-admin').style.display='none';
+
+  // Ocultar botón agregar cliente para comercial
+  if(u.rol==='comercial'){ const b=g('btn-add-cliente'); if(b) b.style.display='none'; }
+
+  await loadData();
+  loadDashboard();
+}
+
+async function loadData() {
+  const res = await api('getData');
+  if(res.ok){
+    // Parsear seguimiento que viene como string JSON desde el Sheet
+    DB.leads = (res.leads||[]).map(l => {
+      if (typeof l.seguimiento === 'string') {
+        try { l.seguimiento = JSON.parse(l.seguimiento); } catch(e) { l.seguimiento = []; }
+      }
+      if (!Array.isArray(l.seguimiento)) l.seguimiento = [];
+      return l;
+    });
+    DB.clientes   = res.clientes   || [];
+    DB.citas      = res.citas      || [];
+    DB.egresados  = res.egresados  || [];
+  }
+  populateSelects();
+  updateBadges();
+}
+
+function updateBadges() {
+  const activos = DB.leads.filter(l=>!['Pagó','Perdido'].includes(l.estado)).length;
+  g('badge-leads').textContent = activos;
+  const sinCita = DB.clientes.filter(c=>c.estado==='Cita pendiente').length;
+  const bc = g('badge-citas');
+  bc.style.display = sinCita>0 ? 'inline-block':'none';
+  bc.textContent = sinCita;
+}
+
+function populateSelects() {
+  const opts = DB.clientes.map(c=>`<option value="${c.id}">${c.nombre} · ${c.servicio}</option>`).join('');
+  const el = g('ci-cli');
+  if(el) el.innerHTML = opts || '<option>Sin clientes registrados</option>';
+  g('ci-fec').value = hoy();
+}
+
+// -----------------------------------------------
+// DASHBOARD
+// -----------------------------------------------
+function loadDashboard() {
+  const perms = PERMISOS[SESSION.usuario.rol]||[];
+  const sinCita = DB.clientes.filter(c=>c.estado==='Cita pendiente').length;
+  const citasHoy = DB.citas.filter(c=>c.fecha===hoy());
+  const leadsActivos = DB.leads.filter(l=>!['Pagó','Perdido'].includes(l.estado)).length;
+  const enClases = DB.clientes.filter(c=>c.estado==='En clases').length;
+  const graduados = DB.egresados.length;
+
+  // Alerta sin cita solo para admin/recepcion
+  const alertaSinCita = perms.includes('clientes') && sinCita>0
+    ? `<div style="background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--accent2);margin-bottom:14px;">
+        ⚠️ <strong>${sinCita} cliente${sinCita>1?'s':''}</strong> que ya pagaron no tienen cita agendada.
+        <span style="cursor:pointer;text-decoration:underline;margin-left:6px" onclick="showPage('clientes',document.getElementById('nav-clientes'))">Ver clientes →</span>
+      </div>` : '';
+
+  // Stats según rol
+  const stats = perms.includes('clientes')
+    ? `<div class="sgrid">
+        <div class="sc y"><div class="sc-lbl">Leads activos</div><div class="sc-val">${leadsActivos}</div><div class="sc-sub">en seguimiento</div></div>
+        <div class="sc o"><div class="sc-lbl">Sin cita agendada</div><div class="sc-val">${sinCita}</div><div class="sc-sub">ya pagaron</div></div>
+        <div class="sc b"><div class="sc-lbl">Citas hoy</div><div class="sc-val">${citasHoy.length}</div><div class="sc-sub">médicos / matrícula / RUNT</div></div>
+        <div class="sc g"><div class="sc-lbl">En clases</div><div class="sc-val">${enClases}</div><div class="sc-sub">${graduados} egresados total</div></div>
+      </div>`
+    : `<div class="sgrid">
+        <div class="sc y"><div class="sc-lbl">Leads activos</div><div class="sc-val">${leadsActivos}</div></div>
+        <div class="sc b"><div class="sc-lbl">Total leads</div><div class="sc-val">${DB.leads.length}</div></div>
+        <div class="sc g"><div class="sc-lbl">Convertidos</div><div class="sc-val">${DB.leads.filter(l=>l.estado==='Pagó').length}</div></div>
+        <div class="sc o"><div class="sc-lbl">Tasa conversión</div><div class="sc-val">${DB.leads.length?Math.round(DB.leads.filter(l=>l.estado==='Pagó').length/DB.leads.length*100):0}%</div></div>
+      </div>`;
+
+  // Citas hoy (solo para recep/admin)
+  const citasBlock = perms.includes('citas') ? `
+    <div class="card">
+      <div class="ch"><span class="ct">Citas de hoy</span><span class="b bb">${citasHoy.length}</span></div>
+      <table class="tbl"><thead><tr><th>Cliente</th><th>Jornada</th><th>Propósito</th><th>Estado</th><th></th></tr></thead>
+      <tbody>${citasHoy.length ? citasHoy.map(c=>`<tr>
+        <td><strong>${c.clienteNombre}</strong></td>
+        <td>${c.jornada==='manana'?'7:30–10:00am':'1:00–2:30pm'}</td>
+        <td style="font-size:11px">${c.proposito}</td>
+        <td><span class="b ${c.estado==='Completada'?'bg':c.estado==='Cancelada'?'br':'bb'}">${c.estado}</span></td>
+        <td>${c.estado==='Confirmada'?`<button class="btn btn-ghost btn-sm" onclick="completarCita('${c.id}')">✓</button>`:''}</td>
+      </tr>`).join('') : '<tr><td colspan="5" class="empty">Sin citas hoy</td></tr>'}
+      </tbody></table>
+    </div>` : '';
+
+  // Leads recientes (siempre visible)
+  const leadsRecientes = DB.leads.slice(-5).reverse();
+  const leadsBlock = `
+    <div class="card">
+      <div class="ch"><span class="ct">Leads recientes</span><button class="btn btn-ghost btn-sm" onclick="showPage('leads',document.getElementById('nav-leads'))">Ver todos</button></div>
+      <table class="tbl"><thead><tr><th>Nombre</th><th>Canal</th><th>Servicio</th><th>Estado</th></tr></thead>
+      <tbody>${leadsRecientes.length ? leadsRecientes.map(l=>`<tr>
+        <td><strong>${l.nombre}</strong><div class="text-m">${l.telefono}</div></td>
+        <td><span class="canal ${canalCls(l.canal)}">${l.canal}</span></td>
+        <td><span class="srv ${srvCls(l.servicio)}">${l.servicio}</span></td>
+        <td><span class="b ${estadoLeadBadge(l.estado)}">${l.estado}</span></td>
+      </tr>`).join('') : '<tr><td colspan="4" class="empty">Sin leads aún</td></tr>'}
+      </tbody></table>
+    </div>`;
+
+  g('pg-dashboard').innerHTML = alertaSinCita + stats +
+    (perms.includes('citas') ? `<div class="pgrid g2">${citasBlock}${leadsBlock}</div>` : leadsBlock);
+}
+
+// -----------------------------------------------
+// LEADS
+// -----------------------------------------------
+const ESTADOS_LEAD = ['Nuevo','Contactado','Interesado','No contesta','Perdido','Pagó'];
+const PIPE_STYLE = {
+  'Nuevo':       'rgba(107,114,128,.2);color:var(--muted)',
+  'Contactado':  'rgba(59,130,246,.15);color:var(--blue)',
+  'Interesado':  'rgba(245,197,24,.15);color:var(--accent)',
+  'No contesta': 'rgba(255,107,53,.15);color:var(--accent2)',
+  'Perdido':     'rgba(239,68,68,.15);color:var(--red)',
+  'Pagó':        'rgba(34,197,94,.15);color:var(--green)',
+};
+
+function loadLeads() {
+  const perms = PERMISOS[SESSION.usuario.rol]||[];
+  const cols = ESTADOS_LEAD.map(est=>{
+    const items = DB.leads.filter(l=>l.estado===est);
+    const cards = items.map(l=>`
+      <div class="pcard" onclick="verLead('${l.id}')">
+        <div class="pcard-name">${l.nombre}</div>
+        <div class="pcard-meta">
+          <span class="canal ${canalCls(l.canal)}">${l.canal}</span>
+          &nbsp;<span class="srv ${srvCls(l.servicio)}">${l.servicio}</span>
+        </div>
+        ${l.nota?`<div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.3">${l.nota.slice(0,55)}${l.nota.length>55?'…':''}</div>`:''}
+        <div style="font-size:9px;color:var(--muted);margin-top:3px">${l.creadoPor||''} · ${(l.creadoEn||'').slice(0,10)}</div>
+      </div>`).join('')||`<div class="pempty">Vacío</div>`;
+    return `<div class="pc">
+      <div class="ph" style="background:${PIPE_STYLE[est]}">${est}<span>${items.length}</span></div>
+      <div class="pb">${cards}</div>
+    </div>`;
+  }).join('');
+
+  const conv = DB.leads.length ? Math.round(DB.leads.filter(l=>l.estado==='Pagó').length/DB.leads.length*100) : 0;
+
+  g('pg-leads').innerHTML = `
+    <div class="sgrid" style="grid-template-columns:repeat(6,1fr)">
+      ${ESTADOS_LEAD.map(e=>`<div class="sc y"><div class="sc-lbl">${e}</div><div class="sc-val" style="font-size:20px">${DB.leads.filter(l=>l.estado===e).length}</div></div>`).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="stitle" style="margin:0">Pipeline</div>
+      <div class="text-m">Tasa conversión: <strong style="color:var(--green)">${conv}%</strong> · Clic en un lead para ver detalle y agregar notas</div>
+    </div>
+    <div class="pipe-wrap">${cols}</div>`;
+}
+
+async function saveLead() {
+  const nombre = v('l-nom');
+  if(!nombre){ toast('El nombre es obligatorio','err'); return; }
+  const data = { nombre, telefono:v('l-tel'), canal:v('l-can'), servicio:v('l-srv'), nota:v('l-nota') };
+  const res = await api('saveLead', data);
+  if(res.ok){
+    closeM('m-lead'); toast('Lead guardado ✓');
+    ['l-nom','l-tel','l-nota'].forEach(id=>{const e=g(id);if(e)e.value='';});
+    await loadData(); loadLeads(); loadDashboard();
+  } else toast(res.error,'err');
+}
+
+function verLead(id) {
+  const lead = DB.leads.find(l=>l.id===id);
+  if(!lead) return;
+  UI.leadId = id;
+  g('vl-title').textContent = lead.nombre;
+  const perms = PERMISOS[SESSION.usuario.rol]||[];
+  const puedeConvertir = perms.includes('clientes') && lead.estado==='Pagó';
+
+  const segItems = (lead.seguimiento||[]).map(s=>`
+    <div class="seg-item">
+      <div class="seg-dot" style="background:var(--blue)"></div>
+      <div class="seg-text">${s.texto}<div class="seg-time">${s.autor} · ${s.fecha}</div></div>
+    </div>`).join('')||'<div style="font-size:11px;color:var(--muted);padding:4px 0">Sin notas de seguimiento aún</div>';
+
+  g('vl-body').innerHTML = `
+    <div class="fgrid" style="margin-bottom:12px">
+      <div><div class="text-m">Teléfono</div><div class="fw6 mt2">${lead.telefono}</div></div>
+      <div><div class="text-m">Canal</div><div class="mt2"><span class="canal ${canalCls(lead.canal)}">${lead.canal}</span></div></div>
+      <div><div class="text-m">Servicio</div><div class="mt2"><span class="srv ${srvCls(lead.servicio)}">${lead.servicio}</span></div></div>
+      <div><div class="text-m">Estado</div><div class="mt2"><span class="b ${estadoLeadBadge(lead.estado)}">${lead.estado}</span></div></div>
+    </div>
+    ${lead.nota?`<div class="nota-box mb3">${lead.nota}</div>`:''}
+    <div class="divider"></div>
+    <div class="text-m mb3">Cambiar estado:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+      ${ESTADOS_LEAD.filter(e=>e!==lead.estado).map(e=>`<button class="btn btn-ghost btn-sm" onclick="cambiarEstadoLead('${id}','${e}')">${e}</button>`).join('')}
+    </div>
+    <div class="divider"></div>
+    <div class="text-m mb3">Notas de seguimiento:</div>
+    <div style="max-height:130px;overflow-y:auto;margin-bottom:10px">${segItems}</div>
+    <div style="display:flex;gap:7px">
+      <input type="text" id="seg-input" placeholder="Agregar nota de seguimiento..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 11px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
+      <button class="btn btn-primary btn-sm" onclick="addSeguimiento('${id}')">Agregar</button>
+    </div>`;
+
+  g('vl-footer').innerHTML = `
+    <button class="btn btn-ghost btn-sm" onclick="closeM('m-ver-lead')">Cerrar</button>
+    ${SESSION.usuario.rol==='admin'?`<button class="btn btn-danger btn-sm" onclick="deleteLead('${id}')">🗑 Eliminar</button>`:''}
+    ${puedeConvertir ? `<button class="btn btn-success btn-sm" onclick="convertirACliente()">✓ Registrar como cliente</button>` : ''}`;
+
+  openM('m-ver-lead');
+}
+
+async function cambiarEstadoLead(id, estado) {
+  await api('updateLead',{id,estado});
+  toast(`Lead → ${estado}`);
+  await loadData(); verLead(id); loadLeads(); loadDashboard();
+}
+
+async function addSeguimiento(leadId) {
+  const input = g('seg-input');
+  const texto = input?.value?.trim();
+  if(!texto){ toast('Escribe una nota primero','err'); return; }
+  await api('addSeguimiento',{leadId,texto});
+  input.value='';
+  toast('Nota agregada ✓');
+  await loadData(); verLead(leadId);
+}
+
+async function convertirACliente() {
+  const lead = DB.leads.find(l=>l.id===UI.leadId);
+  if(!lead) return;
+  g('c-nom').value = lead.nombre;
+  g('c-tel').value = lead.telefono;
+  g('c-can').value = lead.canal;
+  const srvMap={'Primera vez':'Primera vez','Refuerzo':'Refuerzo','Renovación':'Renovación','Recategorización':'Recategorización'};
+  g('c-srv').value = srvMap[lead.servicio]||'Primera vez';
+  closeM('m-ver-lead');
+  openM('m-cliente');
+}
+
+// -----------------------------------------------
+// CLIENTES
+// -----------------------------------------------
+const ESTADOS_CLI = ['Cita pendiente','Cita agendada','Médicos OK','Matrícula OK','En clases'];
+const ESTADO_CLI_BADGE = {
+  'Cita pendiente':'bo','Cita agendada':'bb','Médicos OK':'by',
+  'Matrícula OK':'by','En clases':'bp','Graduado':'bg'
+};
+
+function loadClientes(data) {
+  const clientes = data || DB.clientes;
+  const rows = clientes.map(c=>{
+    const av = ['av1','av2','av3','av4','av5'][Math.abs(hashStr(c.id))%5];
+    return `<tr>
+      <td><div class="flex aic g8"><div class="av ${av}">${initials(c.nombre)}</div><div><div class="fw6">${c.nombre}</div><div class="text-m">${c.telefono}</div></div></div></td>
+      <td><span class="srv ${srvCls(c.servicio)}">${c.servicio}</span></td>
+      <td><span class="b ${ESTADO_CLI_BADGE[c.estado]||'bx'}">${c.estado}</span></td>
+      <td><span class="b ${c.runt==='Si'?'bg':'br'}">${c.runt==='Si'?'✓ Tiene':'✗ Pendiente'}</span></td>
+      <td>${c.jornada}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="verCliente('${c.id}')">Ver</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="6" class="empty">Sin clientes activos — comienza registrando el primer cliente que haya pagado</td></tr>`;
+
+  const cnt = e => DB.clientes.filter(c=>c.estado===e).length;
+  g('pg-clientes').innerHTML = `
+    <div class="sgrid">
+      <div class="sc o"><div class="sc-lbl">Cita pendiente</div><div class="sc-val">${cnt('Cita pendiente')}</div></div>
+      <div class="sc b"><div class="sc-lbl">Cita agendada</div><div class="sc-val">${cnt('Cita agendada')}</div></div>
+      <div class="sc y"><div class="sc-lbl">Médicos / Matrícula</div><div class="sc-val">${cnt('Médicos OK')+cnt('Matrícula OK')}</div></div>
+      <div class="sc p"><div class="sc-lbl">En clases</div><div class="sc-val">${cnt('En clases')}</div></div>
+    </div>
+    <div class="card">
+      <table class="tbl">
+        <thead><tr><th>Cliente</th><th>Servicio</th><th>Estado</th><th>RUNT</th><th>Jornada</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function filterClientes() {
+  const q = g('s-cli').value.toLowerCase();
+  loadClientes(DB.clientes.filter(c=>
+    c.nombre?.toLowerCase().includes(q)||c.documento?.includes(q)||c.telefono?.includes(q)
+  ));
+}
+
+async function saveCliente() {
+  const nombre = v('c-nom');
+  if(!nombre){ toast('El nombre es obligatorio','err'); return; }
+  const data = { nombre, documento:v('c-doc'), telefono:v('c-tel'), email:v('c-mail'), servicio:v('c-srv'), canal:v('c-can'), runt:v('c-runt'), jornada:v('c-jor'), obs:v('c-obs') };
+  const res = await api('saveCliente', data);
+  if(res.ok){
+    closeM('m-cliente'); toast('Cliente registrado ✓');
+    ['c-nom','c-doc','c-tel','c-mail','c-obs'].forEach(id=>{const e=g(id);if(e)e.value='';});
+    await loadData(); loadClientes(); loadDashboard();
+  } else toast(res.error,'err');
+}
+
+function verCliente(id) {
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  UI.clienteId = id;
+  g('vc-title').textContent = c.nombre;
+  const currIdx = ESTADOS_CLI.indexOf(c.estado);
+
+  const flujoHTML = `<div class="flujo">
+    ${ESTADOS_CLI.map((s,i)=>{
+      const done=i<currIdx, curr=i===currIdx;
+      return `${i>0?`<div class="fline ${i<=currIdx?'done':''}"></div>`:''}
+        <div class="fstep ${done?'done':curr?'curr':''}">
+          <div class="fdot">${done?'✓':i+1}</div>
+          <div class="flbl">${s}</div>
+        </div>`;
+    }).join('')}
+  </div>`;
+
+  g('vc-body').innerHTML = `
+    ${flujoHTML}
+    <div class="divider"></div>
+    <div class="fgrid" style="margin-bottom:12px">
+      <div><div class="text-m">Teléfono</div><div class="fw6 mt2">${c.telefono}</div></div>
+      <div><div class="text-m">Documento</div><div class="fw6 mt2">${c.documento||'—'}</div></div>
+      <div><div class="text-m">Servicio</div><div class="mt2"><span class="srv ${srvCls(c.servicio)}">${c.servicio}</span></div></div>
+      <div><div class="text-m">Jornada</div><div class="fw6 mt2">${c.jornada}</div></div>
+      <div><div class="text-m">RUNT</div><div class="mt2"><span class="b ${c.runt==='Si'?'bg':'br'}">${c.runt==='Si'?'✓ Tiene inscripción':'✗ Pendiente'}</span></div></div>
+      <div><div class="text-m">Canal origen</div><div class="mt2"><span class="canal ${canalCls(c.canal)}">${c.canal}</span></div></div>
+    </div>
+    ${c.obs?`<div class="nota-box mb3">${c.obs}</div>`:''}
+    <div class="divider"></div>
+    <div class="text-m mb3">Avanzar en el proceso:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      ${ESTADOS_CLI.filter(e=>e!==c.estado).map(e=>`<button class="btn btn-ghost btn-sm" onclick="cambiarEstadoCliente('${id}','${e}')">${e}</button>`).join('')}
+    </div>`;
+
+  g('vc-footer').innerHTML = `
+    <button class="btn btn-ghost btn-sm" onclick="closeM('m-ver-cliente')">Cerrar</button>
+    ${SESSION.usuario.rol==='admin'?`<button class="btn btn-danger btn-sm" onclick="deleteCliente('${id}')">🗑 Eliminar</button>`:''}
+    <button class="btn btn-primary btn-sm" onclick="agendarDesdeCliente('${id}')">+ Agendar cita</button>
+    <button class="btn btn-success btn-sm" onclick="graduarCliente('${id}')">🎓 Marcar como egresado</button>`;
+
+  openM('m-ver-cliente');
+}
+
+async function cambiarEstadoCliente(id, estado) {
+  await api('updateCliente',{id,estado});
+  toast(`→ ${estado}`);
+  await loadData(); verCliente(id); loadDashboard();
+}
+
+async function graduarCliente(id) {
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  if(!confirm(`¿Marcar a ${c.nombre} como egresado? Se moverá a la sección de Egresados.`)) return;
+  await api('graduarCliente',{id});
+  closeM('m-ver-cliente');
+  toast(`🎓 ${c.nombre} ahora es egresado`,'ok');
+  await loadData(); loadClientes(); loadDashboard();
+}
+
+async function deleteLead(id) {
+  const lead = DB.leads.find(l=>l.id===id);
+  if(!lead) return;
+  if(!confirm(`⚠️ ¿Eliminar definitivamente el lead "${lead.nombre}"?\n\nEsta acción no se puede deshacer.`)) return;
+  const res = await api('deleteLead',{id});
+  if(res.ok){ closeM('m-ver-lead'); toast(`Lead "${lead.nombre}" eliminado`,'ok'); await loadData(); loadLeads(); loadDashboard(); }
+  else toast(res.error,'err');
+}
+
+async function deleteCliente(id) {
+  const c = DB.clientes.find(x=>x.id===id);
+  if(!c) return;
+  if(!confirm(`⚠️ ¿Eliminar definitivamente al cliente "${c.nombre}"?\n\nEsta acción no se puede deshacer.`)) return;
+  const res = await api('deleteCliente',{id});
+  if(res.ok){ closeM('m-ver-cliente'); toast(`Cliente "${c.nombre}" eliminado`,'ok'); await loadData(); loadClientes(); loadDashboard(); }
+  else toast(res.error,'err');
+}
+
+async function deleteEgresado(id) {
+  const e = DB.egresados.find(x=>x.id===id);
+  if(!e) return;
+  if(!confirm(`⚠️ ¿Eliminar definitivamente el registro de "${e.nombre}"?\n\nEsta acción no se puede deshacer.`)) return;
+  const res = await api('deleteEgresado',{id});
+  if(res.ok){ closeM('m-ver-egr'); toast(`Egresado "${e.nombre}" eliminado`,'ok'); await loadData(); loadEgresados(); }
+  else toast(res.error,'err');
+}
+
+// -----------------------------------------------
+// CITAS
+// -----------------------------------------------
+function loadCitas() {
+  const fecha = g('nav-fecha').value || hoy();
+  const citasDia = DB.citas.filter(c=>c.fecha===fecha);
+
+  const bloques = [
+    { key:'manana', label:'Mañana', hora:'7:30am – 10:00am', dias:'Lunes a Viernes y Sábados' },
+    { key:'tarde',  label:'Tarde',  hora:'1:00pm – 2:30pm',  dias:'Solo Lunes a Viernes' },
+  ].map(j=>{
+    const items = citasDia.filter(c=>c.jornada===j.key);
+    const cards = items.map(c=>`
+      <div class="cita-item">
+        <div style="flex:1">
+          <div class="cita-nombre">${c.clienteNombre}</div>
+          <div class="cita-srv">${c.proposito}${c.nota?' · '+c.nota:''}</div>
+        </div>
+        <span class="b ${c.estado==='Completada'?'bg':c.estado==='Cancelada'?'br':'bb'}">${c.estado}</span>
+        ${c.estado==='Confirmada'?`<button class="btn btn-ghost btn-sm" onclick="completarCita('${c.id}')">✓</button>`:''}
+      </div>`).join('')||`<div class="pempty">Sin citas en esta jornada</div>`;
+    return `<div class="jornada">
+      <div class="jh"><div><div class="jt">${j.label} — ${j.hora}</div><div class="jtime">${j.dias}</div></div><span class="b bb">${items.length}</span></div>
+      ${cards}
+    </div>`;
+  }).join('');
+
+  const fechaStr = new Date(fecha+'T12:00:00').toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const proximas = DB.citas.filter(c=>c.fecha>=hoy()).sort((a,b)=>a.fecha>b.fecha?1:-1);
+
+  g('pg-citas').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div><div class="stitle" style="margin:0">📅 ${fechaStr}</div><div class="text-m">${citasDia.length} cita(s)</div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="navDia(-1)">‹</button>
+        <button class="btn btn-ghost btn-sm" onclick="irHoy()">Hoy</button>
+        <button class="btn btn-ghost btn-sm" onclick="navDia(1)">›</button>
+      </div>
+    </div>
+    ${bloques}
+    <div class="card mt3">
+      <div class="ch"><span class="ct">Próximas citas</span></div>
+      <table class="tbl"><thead><tr><th>Fecha</th><th>Cliente</th><th>Jornada</th><th>Propósito</th><th>Estado</th></tr></thead>
+      <tbody>${proximas.length ? proximas.map(c=>`<tr>
+        <td>${c.fecha}</td>
+        <td><strong>${c.clienteNombre}</strong></td>
+        <td>${c.jornada==='manana'?'Mañana 7:30':'Tarde 1:00'}</td>
+        <td style="font-size:11px">${c.proposito}</td>
+        <td><span class="b ${c.estado==='Completada'?'bg':c.estado==='Cancelada'?'br':'bb'}">${c.estado}</span></td>
+      </tr>`).join('') : '<tr><td colspan="5" class="empty">Sin citas próximas</td></tr>'}
+      </tbody></table>
+    </div>`;
+}
+
+async function saveCita() {
+  const clienteId = v('ci-cli');
+  const fecha = v('ci-fec');
+  if(!clienteId||!fecha){ toast('Selecciona cliente y fecha','err'); return; }
+  const clienteNombre = DB.clientes.find(c=>c.id===clienteId)?.nombre||'';
+  const data = { clienteId, clienteNombre, fecha, jornada:v('ci-jor'), proposito:v('ci-prop'), nota:v('ci-nota') };
+  const res = await api('saveCita', data);
+  if(res.ok){
+    await api('updateCliente',{id:clienteId,estado:'Cita agendada'});
+    closeM('m-cita'); toast('Cita agendada ✓');
+    g('ci-nota').value='';
+    g('nav-fecha').value=fecha;
+    await loadData(); loadCitas(); loadDashboard();
+  } else toast(res.error,'err');
+}
+
+async function completarCita(id) {
+  await api('updateCita',{id,estado:'Completada'});
+  toast('Cita completada ✓');
+  await loadData(); loadCitas(); loadDashboard();
+}
+
+function agendarDesdeCliente(clienteId) {
+  g('ci-cli').value=clienteId;
+  g('ci-fec').value=hoy();
+  closeM('m-ver-cliente');
+  openM('m-cita');
+}
+
+function navDia(d){ const el=g('nav-fecha'); const dt=new Date(el.value+'T12:00:00'); dt.setDate(dt.getDate()+d); el.value=dt.toISOString().split('T')[0]; loadCitas(); }
+function irHoy(){ g('nav-fecha').value=hoy(); loadCitas(); }
+
+// -----------------------------------------------
+// EGRESADOS
+// -----------------------------------------------
+function loadEgresados(data) {
+  const egr = data || DB.egresados;
+  const rows = egr.map(e=>{
+    const av=['av1','av2','av3','av4','av5'][Math.abs(hashStr(e.id))%5];
+    return `<tr>
+      <td><div class="flex aic g8"><div class="av ${av}">${initials(e.nombre)}</div><div><div class="fw6">${e.nombre}</div><div class="text-m">${e.telefono}</div></div></div></td>
+      <td><span class="srv ${srvCls(e.servicio)}">${e.servicio}</span></td>
+      <td><span class="canal ${canalCls(e.canal)}">${e.canal}</span></td>
+      <td class="text-m">${e.jornada}</td>
+      <td class="text-m">${e.graduadoEn||e.creadoEn||'—'}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="verEgresado('${e.id}')">Ver</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="6" class="empty">Aún no hay egresados. Cuando un cliente termine su proceso, márcalo como egresado desde su perfil.</td></tr>`;
+
+  const porCanal={};
+  egr.forEach(e=>{ porCanal[e.canal]=(porCanal[e.canal]||0)+1; });
+
+  g('pg-egresados').innerHTML = `
+    <div class="sgrid">
+      <div class="sc g"><div class="sc-lbl">Total egresados</div><div class="sc-val">${egr.length}</div></div>
+      <div class="sc y"><div class="sc-lbl">Referidos generados</div><div class="sc-val">${DB.leads.filter(l=>l.canal==='Referido').length}</div></div>
+      <div class="sc b"><div class="sc-lbl">Renovaciones</div><div class="sc-val">${DB.leads.filter(l=>l.servicio==='Renovación').length}</div></div>
+      <div class="sc p"><div class="sc-lbl">Canal #1</div><div class="sc-val" style="font-size:14px;margin-top:4px">${Object.entries(porCanal).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">Historial de Egresados</span><span class="text-m">${egr.length} persona${egr.length!==1?'s':''}</span></div>
+      <table class="tbl">
+        <thead><tr><th>Egresado</th><th>Servicio</th><th>Canal</th><th>Jornada</th><th>Egresó</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function filterEgresados(){
+  const q=g('s-egr').value.toLowerCase();
+  loadEgresados(DB.egresados.filter(e=>e.nombre?.toLowerCase().includes(q)||e.servicio?.toLowerCase().includes(q)));
+}
+
+function verEgresado(id) {
+  const e = DB.egresados.find(x=>x.id===id);
+  if(!e) return;
+  UI.egrId = id;
+  g('ve-title').textContent = e.nombre;
+  g('ve-body').innerHTML = `
+    <div class="fgrid">
+      <div><div class="text-m">Teléfono</div><div class="fw6 mt2">${e.telefono}</div></div>
+      <div><div class="text-m">Documento</div><div class="fw6 mt2">${e.documento||'—'}</div></div>
+      <div><div class="text-m">Servicio tomado</div><div class="mt2"><span class="srv ${srvCls(e.servicio)}">${e.servicio}</span></div></div>
+      <div><div class="text-m">Canal de origen</div><div class="mt2"><span class="canal ${canalCls(e.canal)}">${e.canal}</span></div></div>
+      <div><div class="text-m">Jornada</div><div class="fw6 mt2">${e.jornada}</div></div>
+      <div><div class="text-m">Egresó</div><div class="fw6 mt2">${e.graduadoEn||'—'}</div></div>
+    </div>
+    ${e.obs?`<div class="nota-box mt3">${e.obs}</div>`:''}
+    <div class="divider"></div>
+    <div class="text-m">Acciones de fidelización:</div>`;
+
+  g('ve-referido').onclick = () => {
+    g('l-nota').value = `Referido por ${e.nombre} (egresado)`;
+    g('l-can').value = 'Referido';
+    closeM('m-ver-egr');
+    openM('m-lead');
+  };
+  g('ve-renovacion').onclick = () => {
+    g('l-nom').value = e.nombre;
+    g('l-tel').value = e.telefono;
+    g('l-can').value = 'Referido';
+    g('l-srv').value = 'Renovación';
+    g('l-nota').value = `Renovación — ex alumno (${e.servicio})`;
+    closeM('m-ver-egr');
+    openM('m-lead');
+  };
+  // Botón eliminar — solo admin, inyectado dinámicamente
+  const footer = g('ve-footer');
+  const existingDel = footer.querySelector('.ve-del-btn');
+  if(existingDel) existingDel.remove();
+  if(SESSION.usuario.rol === 'admin') {
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn btn-danger btn-sm ve-del-btn';
+    delBtn.textContent = '🗑 Eliminar';
+    delBtn.onclick = () => deleteEgresado(id);
+    footer.insertBefore(delBtn, footer.children[1]);
+  }
+  openM('m-ver-egr');
+}
+
+// -----------------------------------------------
+// REPORTES
+// -----------------------------------------------
+function loadReportes() {
+  const leads=DB.leads, clientes=DB.clientes, egr=DB.egresados;
+  const conv=leads.length?Math.round(leads.filter(l=>l.estado==='Pagó').length/leads.length*100):0;
+
+  const srvAll=[...leads,...clientes,...egr];
+  const srvCount={};
+  srvAll.forEach(r=>{ srvCount[r.servicio]=(srvCount[r.servicio]||0)+1; });
+
+  const canalCount={};
+  leads.forEach(l=>{ canalCount[l.canal]=(canalCount[l.canal]||0)+1; });
+
+  const estadoCli={};
+  [...clientes,...egr].forEach(c=>{ estadoCli[c.estado]=(estadoCli[c.estado]||0)+1; });
+
+  const barRow=(label,n,total,cls)=>{
+    const pct=total?Math.round(n/total*100):0;
+    return `<div><div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px"><span>${label}</span><span class="fw6">${n}</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;${cls}"></div></div></div>`;
+  };
+
+  g('pg-reportes').innerHTML = `
+    <div class="sgrid">
+      <div class="sc y"><div class="sc-lbl">Total leads</div><div class="sc-val">${leads.length}</div></div>
+      <div class="sc g"><div class="sc-lbl">Tasa conversión</div><div class="sc-val">${conv}%</div></div>
+      <div class="sc b"><div class="sc-lbl">Clientes activos</div><div class="sc-val">${clientes.length}</div></div>
+      <div class="sc t"><div class="sc-lbl">Egresados</div><div class="sc-val">${egr.length}</div></div>
+    </div>
+    <div class="pgrid g2">
+      <div class="card">
+        <div class="ch"><span class="ct">Servicios más solicitados</span></div>
+        <div style="padding:14px;display:flex;flex-direction:column;gap:9px">
+          ${Object.entries(srvCount).sort((a,b)=>b[1]-a[1]).map(([s,n])=>barRow(`<span class="srv ${srvCls(s)}">${s}</span>`,n,srvAll.length,'')).join('')||'<div class="empty">Sin datos</div>'}
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="ct">Canal de origen de leads</span></div>
+        <div style="padding:14px;display:flex;flex-direction:column;gap:9px">
+          ${Object.entries(canalCount).sort((a,b)=>b[1]-a[1]).map(([c,n])=>barRow(`<span class="canal ${canalCls(c)}">${c}</span>`,n,leads.length,'')).join('')||'<div class="empty">Sin datos</div>'}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">Flujo completo — todos los registros</span></div>
+      <div style="padding:14px;display:grid;grid-template-columns:repeat(7,1fr);gap:9px;text-align:center">
+        ${[...ESTADOS_LEAD.slice(0,4).map(e=>({label:e,n:leads.filter(l=>l.estado===e).length,color:'var(--accent)'})),
+           ...ESTADOS_CLI.map(e=>({label:e,n:clientes.filter(c=>c.estado===e).length,color:'var(--blue)'})),
+           {label:'Egresados',n:egr.length,color:'var(--green)'}
+          ].map(x=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px">
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:${x.color}">${x.n}</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:3px">${x.label}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// -----------------------------------------------
+// NAV
+// -----------------------------------------------
+const PAGE_LOAD = {
+  dashboard:loadDashboard, leads:loadLeads, clientes:loadClientes,
+  citas:loadCitas, egresados:loadEgresados, reportes:loadReportes
+};
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  g('page-'+id)?.classList.add('active');
+  el?.classList.add('active');
+  if(PAGE_LOAD[id]) PAGE_LOAD[id]();
+}
+
+// -----------------------------------------------
+// MODAL
+// -----------------------------------------------
+function openM(id){ g(id)?.classList.add('open'); }
+function closeM(id){ g(id)?.classList.remove('open'); }
+document.querySelectorAll('.moverlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
+
+// -----------------------------------------------
+// TOAST
+// -----------------------------------------------
+function toast(msg, type='ok') {
+  const c=g('toast'), t=document.createElement('div');
+  t.className='ti t'+type; t.textContent=msg;
+  c.appendChild(t); setTimeout(()=>t.remove(),3000);
+}
+
+// -----------------------------------------------
+// UTILS
+// -----------------------------------------------
+function g(id){ return document.getElementById(id); }
+function v(id){ return g(id)?.value||''; }
+function hoy(){ return new Date().toISOString().split('T')[0]; }
+function initials(n){ return (n||'').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase(); }
+function hashStr(s){ let h=0; for(const c of String(s)){ h=(Math.imul(31,h)+c.charCodeAt(0))|0; } return h; }
+function srvCls(s){ return {Primera:'s1',Refuerzo:'s2',Renovación:'s3',Recategorización:'s4'}[Object.keys({Primera:'s1',Refuerzo:'s2',Renovación:'s3',Recategorización:'s4'}).find(k=>s?.startsWith(k))]||'s5'; }
+function canalCls(c){ return {WhatsApp:'cw',Instagram:'ci',Facebook:'cf',Presencial:'cp',Llamada:'cl',Web:'cwe',Referido:'cref'}[c]||'cref'; }
+function estadoLeadBadge(e){ return {Nuevo:'bx',Contactado:'bb',Interesado:'by','No contesta':'bo',Perdido:'br','Pagó':'bg'}[e]||'bx'; }
+
+// -----------------------------------------------
+// INICIO
+// -----------------------------------------------
+(function init(){
+  g('lbtn').addEventListener('click', doLogin);
+  g('li-p').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  g('btn-limpiar').addEventListener('click', limpiarSesion);
+
+  // Limpiar sesión corrupta automáticamente
+  const saved = localStorage.getItem('sc3_session');
+  if(saved){
+    try{
+      const parsed = JSON.parse(saved);
+      // Verificar que la sesión tenga estructura válida
+      if(parsed?.token && parsed?.usuario?.rol && parsed?.usuario?.nombre){
+        SESSION = parsed;
+        initApp();
+        return;
+      } else {
+        // Sesión corrupta — limpiar
+        localStorage.removeItem('sc3_session');
+      }
+    } catch(e){
+      localStorage.removeItem('sc3_session');
+    }
+  }
+  g('login-screen').style.display='flex';
+})();
+</script>
+</body>
+</html>
