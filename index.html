@@ -246,7 +246,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="login-err" id="lerr"></div>
     <div class="fg"><label>Correo electrónico</label><input type="email" id="li-e" placeholder="correo@escuela.com" autocomplete="email"></div>
     <div class="fg"><label>Contraseña</label><input type="password" id="li-p" placeholder="••••••••" autocomplete="current-password"></div>
-    <button class="btn btn-primary btn-full" id="lbtn" onclick="doLogin()">Entrar</button>
+    <button class="btn btn-primary btn-full" id="lbtn">Entrar</button>
+    <div style="text-align:center;margin-top:14px">
+      <span style="font-size:11px;color:var(--muted);cursor:pointer;text-decoration:underline" onclick="limpiarSesion()">¿Problemas para entrar? Haz clic aquí</span>
+    </div>
   </div>
 </div>
 
@@ -343,8 +346,4 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
 
     <!-- EGRESADOS -->
-    <div id="page-egresados" class="page">
-      <div class="topbar">
-        <div class="topbar-title">Egresados</div>
-        <div class="topbar-actions">
-          <div class="search-w" style="width:190px"><span class="si">⌕</span><input type="te
+    <div id="page-egresados" class="page
